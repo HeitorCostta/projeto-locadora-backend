@@ -26,6 +26,19 @@ class CarsRepository {
     );
     return result.rows[0];
   }
+
+  async updateAvailability(id, available) {
+  const query = `
+    UPDATE cars
+    SET available = $1
+    WHERE id = $2
+    RETURNING *;
+  `;
+
+  const result = await pool.query(query, [available, id]);
+  return result.rows[0];
+}
+
 }
 
 module.exports = new CarsRepository();
