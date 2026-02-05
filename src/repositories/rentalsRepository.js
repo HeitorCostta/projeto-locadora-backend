@@ -23,6 +23,28 @@ class RentalsRepository {
     const result = await pool.query(query, [car_id]);
     return result.rows[0];
   }
+
+  async findById(id) {
+    const query = `
+      SELECT * FROM rentals
+      WHERE id = $1;
+    `;
+
+    const result = await pool.query(query, [id]);
+    return result.rows[0];
+  }
+
+  async returnRental(id) {
+    const query = `
+      UPDATE rentals
+      SET end_date = NOW()
+      WHERE id = $1
+      RETURNING *;
+    `;
+
+    const result = await pool.query(query, [id]);
+    return result.rows[0];
+  }
 }
 
 module.exports = new RentalsRepository();
