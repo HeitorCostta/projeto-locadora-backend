@@ -1,48 +1,51 @@
 const pool = require('../database/connection');
 
 class RentalsRepository {
-  async create({ user_id, car_id, start_date, end_date, total_price }) {
+  async findById(id) {
     const query = `
-      INSERT INTO rentals (user_id, car_id, start_date, end_date, total_price)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *;
+      SELECT * FROM rentals
+      WHERE id = $1
     `;
 
-    const values = [user_id, car_id, start_date, end_date, total_price];
-
-    const result = await pool.query(query, values);
+    const result = await pool.query(query, [id]);
     return result.rows[0];
   }
 
   async findOpenByCar(car_id) {
     const query = `
       SELECT * FROM rentals
-      WHERE car_id = $1 AND end_date IS NULL;
+      WHERE car_id = $1 AND end_date IS NULL
     `;
 
     const result = await pool.query(query, [car_id]);
     return result.rows[0];
   }
 
-  async findById(id) {
+  async create({ user_id, car_id, start_date }) {
     const query = `
-      SELECT * FROM rentals
-      WHERE id = $1;
+      INSERT INTO rentals (user_id, car_id, start_date)
+      VALUES ($1, $2, $3)
+      RETURNING *
     `;
 
-    const result = await pool.query(query, [id]);
+    const values = [user_id, car_id, start_date];
+    const result = await pool.query(query, values);
+
     return result.rows[0];
   }
 
-  async returnRental(id) {
+  async finishRental({ id, end_date, total_price }) {
     const query = `
       UPDATE rentals
-      SET end_date = NOW()
+      SET end_date = $2,
+          total_price = $3
       WHERE id = $1
-      RETURNING *;
+      RETURNING *
     `;
 
-    const result = await pool.query(query, [id]);
+    const values = [id, end_date, total_price];
+    const result = await pool.query(query, values);
+
     return result.rows[0];
   }
 }

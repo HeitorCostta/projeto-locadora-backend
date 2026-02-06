@@ -1,11 +1,9 @@
-const ReturnRentalService = require("../services/returnRentalService");
+const returnRentalService = require("../services/returnRentalService");
 
 class ReturnRentalController {
   async handle(req, res) {
     try {
       const { id } = req.params;
-
-      const returnRentalService = new ReturnRentalService();
 
       const rental = await returnRentalService.execute(id);
 

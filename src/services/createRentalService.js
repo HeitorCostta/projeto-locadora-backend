@@ -3,7 +3,8 @@ const usersRepository = require('../repositories/usersRepository');
 const carsRepository = require('../repositories/carsRepository');
 
 class CreateRentalService {
-  async execute({ user_id, car_id, start_date, end_date }) {
+  async execute({ user_id, car_id })
+ {
     // 1️⃣ Usuário existe?
     const user = await usersRepository.findById(user_id);
     if (!user) {
@@ -22,22 +23,17 @@ class CreateRentalService {
       throw new Error('Carro indisponível');
     }
 
-    // 4️⃣ Calcular total
-    const start = new Date(start_date);
-    const end = new Date(end_date);
 
-    const diffTime = Math.abs(end - start);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    const total_price = diffDays * car.daily_rate;
-
-    // 5️⃣ Criar aluguel
+    // 4️⃣ Criar aluguel (aberto)
     const rental = await rentalsRepository.create({
       user_id,
       car_id,
-      start_date,
-      end_date,
-      total_price
+      start_date: new Date(),
+      end_date: null,
+      total_price: null
     });
+
+
 
     // 6️⃣ Marcar carro como indisponível
     await carsRepository.updateAvailability(car_id, false);
