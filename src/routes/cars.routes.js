@@ -4,6 +4,10 @@ const listCarsController = require('../controllers/listCarsController');
 
 const router = express.Router();
 
+router.get('/available', (req, res) => {
+  return createCarController.getAvailable(req, res);
+});
+
 router.post('/', (req, res) => {
   return createCarController.handle(req, res);
 });

@@ -19,6 +19,14 @@ class CarsRepository {
     return result.rows;
   }
 
+  async findAvailable() {
+  const result = await pool.query(
+    'SELECT * FROM cars WHERE available = true'
+  );
+
+  return result.rows;
+}
+
   async findById(id) {
     const result = await pool.query(
       'SELECT * FROM cars WHERE id = $1',

@@ -34,6 +34,16 @@ class RentalsRepository {
     return result.rows[0];
   }
 
+  async findAll() {
+  const query = `
+    SELECT * FROM rentals
+    ORDER BY created_at DESC
+  `;
+
+  const result = await pool.query(query);
+  return result.rows;
+}
+
   async finishRental({ id, end_date, total_price }) {
     const query = `
       UPDATE rentals

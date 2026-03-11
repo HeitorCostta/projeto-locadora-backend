@@ -18,6 +18,15 @@ class CreateCarController {
       return res.status(400).json({ error: error.message });
     }
   }
+
+  async getAvailable(req, res) {
+    try {
+      const cars = await createCarService.getAvailableCars();
+      return res.json(cars);
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = new CreateCarController();

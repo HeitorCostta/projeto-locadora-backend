@@ -5,26 +5,26 @@ const carsRepository = require('../repositories/carsRepository');
 class CreateRentalService {
   async execute({ user_id, car_id })
  {
-    // 1️⃣ Usuário existe?
+    // Usuário existe?
     const user = await usersRepository.findById(user_id);
     if (!user) {
       throw new Error('Usuário não existe');
     }
 
-    // 2️⃣ Carro existe?
+    //  Carro existe?
     const car = await carsRepository.findById(car_id);
     if (!car) {
       throw new Error('Carro não existe');
     }
 
-    // 3️⃣ Carro já está alugado?
+    //  Carro já está alugado?
     const rentalOpen = await rentalsRepository.findOpenByCar(car_id);
     if (rentalOpen) {
       throw new Error('Carro indisponível');
     }
 
 
-    // 4️⃣ Criar aluguel (aberto)
+    //  Criar aluguel (aberto)
     const rental = await rentalsRepository.create({
       user_id,
       car_id,
@@ -35,7 +35,7 @@ class CreateRentalService {
 
 
 
-    // 6️⃣ Marcar carro como indisponível
+    //  Marcar carro como indisponível
     await carsRepository.updateAvailability(car_id, false);
 
     return rental;
